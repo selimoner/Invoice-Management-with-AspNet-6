@@ -1,0 +1,189 @@
+﻿@model testProject.ViewModels.InvoiceModels.CreateInvoiceViewModel;
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Creating New Invoice</h1>
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        alert('@TempData["SuccessMessage"]');
+    </script>
+}
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Invoice.CustomerId" class="control-label">Select Customer</label>
+                @if (Model.Customers != null )
+                {
+                    <select asp-for="Invoice.CustomerId" asp-items="new SelectList(Model.Customers, nameof(Customer.Id), nameof(Customer.CustomerName), Model.Invoice.CustomerId)" class="form-control">
+                        <option value="">Select Customer</option>
+                    </select>
+                }
+                else
+                {
+                    <p class="text-danger">Unable to retrieve customer data.</p>
+                }
+                <span asp-validation-for="Invoice.CustomerId" class="text-danger"></span>
+                @Html.ActionLink("Create New Customer If Not in List", "Create", "Customer", new { id = Model.Customers }, null)
+            </div>
+            <input type="hidden" asp-for="Invoice.Id" />
+            <div id="sourceItem" class="form-group border p-3 mt-3 mb-3">
+                <label class="control-label">Select Items</label>
+                <div class="item-set" data-index="0">
+                    <select asp-for="Invoice.InvoiceItems[0].ItemId" asp-items="new SelectList(Model.Items, nameof(Item.Id), nameof(Item.ItemDescription))" class="form-control">
+                        <option value="">Select Item</option>
+                    </select>
+                    <div class="form-group">
+                        <label asp-for="Invoice.InvoiceItems[0].Quantity" class="control-label">Quantity</label>
+                        <input asp-for="Invoice.InvoiceItems[0].Quantity" class="form-control quantity-input" />
+                        <span asp-validation-for="Invoice.InvoiceItems[0].Quantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Invoice.InvoiceItems[0].UnitPrice" class="control-label">Unit Price</label>
+                        <input asp-for="Invoice.InvoiceItems[0].UnitPrice" class="form-control unit-price-input" pattern="^\d*(\.\d{0,2})?" />
+                        <span asp-validation-for="Invoice.InvoiceItems[0].UnitPrice" class="text-danger"></span>
+                    </div>
+                    @Html.ActionLink("Create New Item If Not in List", "Create", "Item", new { id = Model.Items }, null)
+                    <br />
+                </div>
+            </div>
+            
+            <button type="button" id="addNewItem" class="btn btn-warning">Add Item</button>
+            
+            <div class="form-group">
+                <label asp-for="Invoice.TotalPrice" class="control-label"></label>
+                <input asp-for="Invoice.TotalPrice" class="form-control total-price-input" pattern="^\d*(\.\d{0,2})?" />
+                <span asp-validation-for="Invoice.TotalPrice" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Invoice.TotalVat" class="control-label"></label>
+                <input asp-for="Invoice.TotalVat" class="form-control total-vat-input" pattern="^\d*(\.\d{0,2})?" />
+                <span asp-validation-for="Invoice.TotalVat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Invoice.InvoiceNo" class="control-label"></label>
+                <input asp-for="Invoice.InvoiceNo" class="form-control" />
+                <span asp-validation-for="Invoice.InvoiceNo" class="text-danger"></span>
+            </div>
+            <label asp-for="DateHolder" class="control-label">Invoice Date</label>
+            <div class="form-group col-sm-12 d-flex justify-content-between">
+                
+                <div class="d-flex">
+                    <input asp-for="DateHolder" type="date" class="form-control" id="invoiceDate" />&nbsp;
+                    <button type="button" id="substractDate" class="btn btn-primary">-</button>&nbsp;
+                    <button type="button" id="addDate" class="btn btn-primary">+</button>
+                </div>
+                <span asp-validation-for="DateHolder" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Payment Status</label>
+                <div class="form-check">
+                    <input name="Invoice.IsInvoicePaid" id="paidCheckbox" value="true" type="radio" class="form-check-input" />
+                    <label class="form-check-label" for="paidCheckbox">Paid</label>
+                </div>
+                <div class="form-check">
+                    <input name="Invoice.IsInvoicePaid" id="notPaidCheckbox" value="false" type="radio" class="form-check-input" />
+                    <label class="form-check-label" for="notPaidCheckbox">Not Paid</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Invoice.RemainingBalance" class="control-label">Remaining Balance</label>
+                <input asp-for="Invoice.RemainingBalance" class="form-control remaining-balance-input" pattern="^\d*(\.\d{0,2})?" />
+                <span asp-validation-for="Invoice.RemainingBalance" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Invoice.PaidAmount" class="control-label">Paid Amount</label>
+                <input asp-for="Invoice.PaidAmount" class="form-control paid-amount-input" pattern="^\d*(\.\d{0,2})?" />
+                <span asp-validation-for="Invoice.PaidAmount" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-success">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI/tTllhLEx5BkNJr6eB1uI9fJERp9PVg2LZ9KHk=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $(document).on('change', '.quantity-input, .unit-price-input, .paid-amount-input', function () {
+                updateTotal();
+            });
+
+            function updateTotal() {
+                var total = 0;
+                var vat = 0;
+
+                $('.item-set').each(function () {
+                    var quantity = parseFloat($(this).find('.quantity-input').val()) || 0;
+                    var unitPrice = parseFloat($(this).find('.unit-price-input').val()) || 0;
+
+                    if ($.isNumeric(quantity) && $.isNumeric(unitPrice)) {
+                        total += quantity * unitPrice;
+                    }
+                });
+
+                vat = total - (total * (100 / (100 + 18)));
+
+                var totalPrice = total.toFixed();
+                var paidAmount = parseFloat($('.paid-amount-input').val()) || 0;
+                paidAmount = isNaN(paidAmount) ? 0 : paidAmount;
+                var remainingBalance = (total - paidAmount).toFixed();
+
+                $('.total-price-input').val(totalPrice);
+                $('.total-vat-input').val(vat.toFixed());
+                $('.remaining-balance-input').val(remainingBalance);
+                $('.paid-amount-input').val(paidAmount)
+            }
+
+            $("#addNewItem").click(function () {
+                var lastItemSet = $(".item-set:last");
+                var newIndex = parseInt(lastItemSet.data('index')) + 1; 
+                var newItem = lastItemSet.clone().attr('data-index', newIndex);
+
+                newItem.find('[id^="Invoice_InvoiceItems"][name^="Invoice.InvoiceItems"]').each(function () {
+                    var currentName = $(this).attr('name');
+                    var newName = currentName.replace(/\[\d+\]/g, '[' + newIndex + ']');
+                    $(this).attr('name', newName).attr('id', newName.replace('.', '_'));
+                });
+
+                newItem.find('input, select').val('');
+                
+                newItem.appendTo("#sourceItem");
+
+                newItem.find('.quantity-input, .unit-price-input').on('change', function () {
+                    updateTotal();
+                });
+                newItem.find('.quantity-input, .unit-price-input').change();
+            });
+            $("#substractDate").click(function subtractDay() {
+                var dateInput = document.getElementById('invoiceDate');
+                var currentDate = new Date(dateInput.value);
+                currentDate.setDate(currentDate.getDate() - 1);
+                dateInput.valueAsDate = currentDate;
+            });
+
+            $("#addDate").click(function addDay() {
+                var dateInput = document.getElementById('invoiceDate');
+                var currentDate = new Date(dateInput.value); // Ensure proper format
+                currentDate.setDate(currentDate.getDate() + 1);
+                dateInput.valueAsDate = currentDate;
+            });
+        });
+
+    </script>
+}

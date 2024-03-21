@@ -1,0 +1,87 @@
+﻿@model testProject.ViewModels.InvoiceModels.DetailsInvoiceViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Invoice Details</h1>
+
+<div>
+    <h4>@Model.Invoice.InvoiceNo</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Invoice No
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Invoice.InvoiceNo)
+        </dd>
+        <dt class="col-sm-2">
+            Customer Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customers.CustomerName)
+        </dd>
+        <dt class="col-sm-2">
+            Customer Tin Number
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customers.CustomerTinNumber)
+        </dd>
+        <dt class="col-sm-2">
+            Invoice Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Invoice.InvoiceDate.ToShortDateString()
+        </dd>
+        <br />
+        @for (var i = 0; i < Model.Items.Count; i++)
+        {
+            <dt class="col-sm-2">
+                @($"{i + 1}. Item:")
+            </dt>
+            <dd class="col-sm-10">
+                <strong>Item Name:</strong> @Html.DisplayFor(modelItem => Model.Items[i].ItemDescription)<br />
+                <strong>Quantity :</strong> @Html.DisplayFor(modelItem => Model.Invoice.InvoiceItems[i].Quantity)<br />
+                <strong>Unit Price :</strong> @Html.DisplayFor(modelItem => Model.Invoice.InvoiceItems[i].UnitPrice)
+            </dd>
+        }
+        <br />
+        <dt class="col-sm-2">
+            Total Price
+        </dt>
+        <dd class="col-sm-10">
+            @string.Format("{0:N}", Model.Invoice.TotalPrice)
+        </dd>
+        <dt class="col-sm-2">
+            Total Vat
+        </dt>
+        <dd class="col-sm-10">
+            @string.Format("{0:N}", Model.Invoice.TotalVat)
+        </dd>
+        
+        <dt class="col-sm-2">
+            Is Invoice Paid?
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Invoice.IsInvoicePaid)
+        </dd>
+        <dt class="col-sm-2">
+            Remaining Balance
+        </dt>
+        <dd class="col-sm-10">
+            @string.Format("{0:N}", Model.Invoice.RemainingBalance)
+        </dd>
+        <dt class="col-sm-2">
+            Paid Amount
+        </dt>
+        <dd class="col-sm-10">
+            @string.Format("{0:N}", Model.Invoice.PaidAmount)
+        </dd>
+        
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Invoice.Id }, new { @class = "btn btn-warning" }) |
+    <a asp-action="Index" class="btn btn-info">Back to List</a>
+</div>

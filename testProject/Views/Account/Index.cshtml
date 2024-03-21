@@ -1,0 +1,36 @@
+﻿@model testProject.ViewModels.AccountModels.AccountViewModel;
+@{
+    ViewData["Title"] = "Index";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        alert('@TempData["SuccessMessage"]');
+    </script>
+}
+<h1>Accounts Page</h1>
+<div class="form-group col-sm-3">
+    <form asp-action="ListInvoices" method="get">
+    <label asp-for="CustomerId" class="control-label">Select Customer</label>
+    @if (Model.Customers != null)
+    {
+        <select asp-for="CustomerId" asp-items="new SelectList(Model.Customers, nameof(Customer.Id), nameof(Customer.CustomerName))" class="form-control">
+            <option value="">Select Customer</option>
+        </select>
+        
+    }
+    else
+    {
+        <p class="text-danger">Unable to retrieve customer data.</p>
+    }
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    <br />
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">List</button>
+        </div>
+    <br />
+        @Html.ActionLink("Back to Invoice Page", "Index", "Invoice", null, new { @class = "btn btn-warning" })
+        
+    </form>
+</div>
+

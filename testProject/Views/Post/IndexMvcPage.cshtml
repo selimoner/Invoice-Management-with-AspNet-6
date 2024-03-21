@@ -1,0 +1,75 @@
+﻿@model IEnumerable<testProject.ViewModels.PostViewModels.PostViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        alert('@TempData["SuccessMessage"]');
+    </script>
+}
+<style>
+    .post-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .post-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px;
+        width: 300px;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+        margin-top: 8px;
+    }
+
+    .post-actions {
+        margin-top: 16px;
+    }
+
+        .post-actions a {
+            margin-right: 8px;
+            text-decoration: none;
+            color: #007bff;
+        }
+</style>
+
+<h1>Posts2</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create Post</a>
+    <input type="text"/>
+</p>
+<partial name="_pager" model="@pager" />
+<div class="post-container">
+    @foreach (var item in Model)
+    {
+        <div class="post-card">
+            <h3>@item.Title</h3>
+            <p>@item.Description</p>
+            <img src="~/images/@item.ImageUrl" alt="Post Image">
+            <p>Publish Date: @item.PublishDate.</p>
+            <div class="post-actions">
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-warning" }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-info" }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+            </div>
+        </div>
+    }
+</div>

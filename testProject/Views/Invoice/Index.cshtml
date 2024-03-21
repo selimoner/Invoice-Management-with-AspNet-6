@@ -1,0 +1,81 @@
+﻿@model IEnumerable<testProject.ViewModels.InvoiceModels.IndexInvoiceViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Invoice List</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create Invoice</a> |
+    @Html.ActionLink("Customer Accounts", "Index", "Account", null, new { @class = "btn btn-success" })
+</p>
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        alert('@TempData["SuccessMessage"]');
+    </script>
+}<br />
+<table class="table" id="invoice_paging">
+    <thead>
+        <tr>
+            <th>
+                Invoice No
+            </th>
+            <th>
+                Customer Name
+            </th>
+            <th>
+                Customer Tin Number
+            </th>
+            <th>
+                Invoice Date
+            </th>
+            <th>
+                Total Price
+            </th>
+            <th>
+                Total Vat
+            </th>
+            <th>
+                Is Invoice Paid
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Invoice.InvoiceNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.CustomerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.CustomerTinNumber)
+                </td>
+                <td>
+                    @item.Invoice.InvoiceDate.ToShortDateString()
+                </td>
+                <td>
+                    @string.Format("{0:N}", item.Invoice.TotalPrice)
+                </td>
+                <td>
+                    @string.Format("{0:N}", item.Invoice.TotalVat)
+                </td>
+                <td>
+                    @(item.Invoice.IsInvoicePaid.HasValue ? (item.Invoice.IsInvoicePaid.Value ? "paid" : "waiting") : "waiting")
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Invoice.Id }, new { @class = "btn btn-warning" }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Invoice.Id }, new { @class = "btn btn-info" }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Invoice.Id }, new { @class = "btn btn-danger" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

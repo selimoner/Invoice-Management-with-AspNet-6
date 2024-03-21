@@ -1,0 +1,39 @@
+﻿@model testProject.ViewModels.ItemModels.EditItemViewModel;
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Editing Item : @Model.Item.ItemDescription</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Item.ItemCode" class="control-label">Item Code</label>
+                <input asp-for="Item.ItemCode" class="form-control" />
+                <span asp-validation-for="Item.ItemCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item.ItemDescription" class="control-label">Item Description</label>
+                <input asp-for="Item.ItemDescription" class="form-control" />
+                <span asp-validation-for="Item.ItemDescription" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-success" /> |
+                <a asp-action="Index" class="btn btn-info">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

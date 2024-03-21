@@ -1,0 +1,49 @@
+﻿@model IEnumerable<testProject.ViewModels.CustomerModels.IndexCustomerViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Customer List</h1>
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        alert('@TempData["SuccessMessage"]');
+    </script>
+}
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Customer Here</a>
+</p>
+    <table class="table" id="customer_paging">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Tin Number
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Customer.CustomerName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Customer.CustomerTinNumber)
+                    </td>
+                    <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Customer.Id }, new { @class = "btn btn-warning" }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Customer.Id }, new { @class = "btn btn-info" }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Customer.Id }, new { @class = "btn btn-danger" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

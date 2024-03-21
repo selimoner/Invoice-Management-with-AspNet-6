@@ -1,0 +1,48 @@
+﻿@model IEnumerable<testProject.ViewModels.ItemModels.IndexItemViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Item List</h1>
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        alert('@TempData["SuccessMessage"]');
+    </script>
+}
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Item Here</a>
+</p>
+<table class="table" id="item_paging">
+    <thead>
+        <tr>
+            <th>
+                Item Code
+            </th>
+            <th>
+                Item Description
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Item.ItemCode)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Item.ItemDescription)
+            </td>
+            <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Item.Id }, new { @class = "btn btn-warning" }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Item.Id }, new { @class = "btn btn-info" }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Item.Id }, new { @class = "btn btn-danger" })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,45 @@
+﻿@model testProject.ViewModels.PostViewModels.PostViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Editing the Post</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form enctype="multipart/form-data" asp-action="Edit" class="form-group col-sm-6">
+            <input type="hidden" asp-for="@Model.Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PostImage"></label>
+                <div class="custom-file">
+                    <input asp-for="PostImage" type="file" class="form-control" id="PostImage" name="PostImage" accept="image/*" onchange="document.getElementById('PostImagePrv').src=window.URL.createObjectURL(this.files[0])" />
+                    <label class="custom-file-label" id="fileLabel" for="PostImage">Choose File</label>
+                </div>
+                <span asp-validation-for="PostImage" class="text-danger"></span>
+                <img id="PostImagePrv" src="~/images/@Model.ImageUrl" alt="Post Image" width="240" height="180" style="border:1px; margin-top:20px; margin-left:120px;" />
+            </div>
+            <div class="form-group">
+                <label asp-for="PublishDate" class="control-label"></label>
+                <input asp-for="PublishDate" class="form-control" type="date" />
+                <span asp-validation-for="PublishDate" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-success" /> |
+                <a asp-action="Index" class="btn btn-info">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>

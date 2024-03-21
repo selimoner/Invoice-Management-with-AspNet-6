@@ -1,0 +1,230 @@
+﻿@model IEnumerable<testProject.ViewModels.PostViewModels.PostViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+
+}
+@{
+    var postCount = 0;
+    if (ViewBag.PostCount != null)
+    {
+        postCount = ViewBag.PostCount;
+    }
+}
+
+
+
+<style>
+    .post-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .post-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px;
+        width: 300px;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+        margin-top: 8px;
+    }
+
+    .post-actions {
+        margin-top: 16px;
+    }
+
+        .post-actions a {
+            margin-right: 8px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        padding: 0;
+    }
+
+        .pagination li {
+            margin: 0 2px;
+        }
+
+            .pagination li button {
+                background-color: #007bff;
+                color: #fff;
+                border: 1px solid #007bff;
+                padding: 5px 10px;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+
+                .pagination li button:hover {
+                    background-color: #0056b3;
+                }
+
+            .pagination li.active button {
+                background-color: red; 
+            }
+
+            .pagination li.disabled button {
+                pointer-events: none;
+                background-color: #ccc;
+                border-color: #ccc;
+                color: #777;
+            }
+
+    .info {
+        text-align: left;
+        margin-bottom: 20px;
+    }
+</style>
+
+<h1>Posts</h1>
+<div class="info">
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create Post</a>
+        <input type="text"/>
+    </p>
+    <p><strong>Total Pages:</strong> <span id="total-pages"></span> <strong>Total Items:</strong> @ViewBag.PostCount.ToString() <strong>Current Page:</strong> <span id="current-page"></span></p>
+    <div class="container">
+        <ul id="pagination" class="pagination justify-content-end"></ul>
+    </div>
+</div>
+<div id="post-container" class="post-container">
+   
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            loadPageData(1);
+        });
+
+        function loadPageData(pageNumber) {
+            $.ajax({
+                url: '@Url.Action("GetPagedData", "Post")',
+                type: 'GET',
+                data: { pageNumber: pageNumber },
+                success: function (data) {
+                    displayPosts(data.data);
+
+                    displayPagination(data.totalPages, data.currentPage);
+
+                    $('#total-pages').text(data.totalPages);
+                    $('#current-page').text(data.currentPage);
+                },
+                error: function () {
+                    console.error('Failed to load paged data.');
+                }
+            });
+        }
+
+        function displayPosts(posts) {
+            var postContainer = $('#post-container');
+            postContainer.empty();
+
+            $.each(posts, function (index, post) {
+                var publishDate = new Date(post.publishDate); 
+                var formattedDate = formatDate(publishDate);
+
+                var postHtml = '<div class="post-card">' +
+                    '<h3>' + post.title + '</h3>' +
+                    '<p>' + post.description + '</p>' +
+                    '<img src="/images/' + post.imageUrl + '" alt="Post Image">' + 
+                    '<p>Publish Date: ' + formattedDate + '</p>' +
+                    '<div class="post-actions">' +
+                    '<a href="/Post/Edit/' + post.id + '" class="btn btn-warning">Edit</a>' +
+                    '<a href="/Post/Details/' + post.id + '" class="btn btn-info">Details</a>' +
+                    '<a href="/Post/Delete/' + post.id + '" class="btn btn-danger">Delete</a>' +
+                    '</div>' +
+                    '</div>';
+
+                postContainer.append(postHtml);
+            });
+        }
+
+        function formatDate(date) {
+            var day = date.getDate();
+            var month = date.getMonth() + 1; 
+            var year = date.getFullYear();
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+
+            day = day < 10 ? '0' + day : day;
+            month = month < 10 ? '0' + month : month;
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            return day + '-' + month + '-' + year + ' ' + hours + '.' + minutes;
+        }
+
+        // function displayPagination(totalPages, currentPage) {
+        //     var pagination = $('#pagination');
+        //     pagination.empty();
+
+        //     function addPageButton(page, isActive) {
+        //         var buttonClass = isActive ? 'page-link active' : 'page-link';
+        //         pagination.append('<li class="page-item"><button class="' + buttonClass + '" onclick="loadPageData(' + page + ')">' + page + '</button></li>');
+        //     }
+
+        //     pagination.append('<li class="page-item"><button class="page-link" onclick="loadPageData(1)">First</button></li>');
+
+        //     if (currentPage > 1) {
+        //         pagination.append('<li class="page-item"><button class="page-link" onclick="loadPageData(' + (currentPage - 1) + ')">Previous</button></li>');
+        //     }
+        //     var startPage = Math.max(1, currentPage - 2);
+        //     var endPage = Math.min(totalPages, currentPage + 2);
+
+        //     for (var i = startPage; i <= endPage; i++) {
+        //         addPageButton(i, false);
+        //     }
+
+        //     if (currentPage < totalPages) {
+        //         pagination.append('<li class="page-item"><button class="page-link" onclick="loadPageData(' + (currentPage + 1) + ')">Next</button></li>');
+        //     }
+
+        //     pagination.append('<li class="page-item"><button class="page-link" onclick="loadPageData(' + totalPages + ')">Last</button></li>');
+        // }
+        function displayPagination(totalPages, currentPage) {
+            var pagination = $('#pagination');
+            pagination.empty();
+
+            function addPageButton(page, isActive) {
+                var buttonClass = isActive ? 'page-link active' : 'page-link';
+                pagination.append('<li class="page-item"><button class="' + buttonClass + '" onclick="loadPageData(' + page + ')">' + page + '</button></li>');
+            }
+
+            if (currentPage > 1) {
+                pagination.append('<li class="page-item"><button class="page-link" onclick="loadPageData(1)">First</button></li>');
+            }
+
+            if (currentPage > 1) {
+                pagination.append('<li class="page-item"><button class="page-link" onclick="loadPageData(' + (currentPage - 1) + ')">Previous</button></li>');
+            }
+
+            var startPage = Math.max(1, currentPage - 2);
+            var endPage = Math.min(totalPages, currentPage + 2);
+
+            for (var i = startPage; i <= endPage; i++) {
+                addPageButton(i, i === currentPage);
+            }
+
+            if (currentPage < totalPages) {
+                pagination.append('<li class="page-item"><button class="page-link" onclick="loadPageData(' + (currentPage + 1) + ')">Next</button></li>');
+            }
+
+            if (currentPage !== totalPages) {
+                pagination.append('<li class="page-item"><button class="page-link" onclick="loadPageData(' + totalPages + ')">Last</button></li>');
+            }
+        }
+
+    </script>
+}

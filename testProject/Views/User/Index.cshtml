@@ -1,0 +1,60 @@
+﻿@model IEnumerable<testProject.ViewModels.AuthenticationViewModels.LoginViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>User List</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New User Here</a>
+</p>
+<table class="table" id="item_paging">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.User.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.Password)
+            </th>
+            <th>
+                E-Mail Address
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.Surname)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.User.Username)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.User.Password)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.User.EmailAddress)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.User.Name)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.User.Surname)
+            </td>
+            <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.User.Id }, new { @class = "btn btn-warning" }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.User.Id }, new { @class = "btn btn-danger" })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

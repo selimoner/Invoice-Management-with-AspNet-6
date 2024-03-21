@@ -1,0 +1,68 @@
+﻿@model testProject.ViewModels.AccountModels.AccountViewModel;
+
+@{
+    ViewData["Title"] = "ListInvoices";
+}
+
+<h1>Invoices of Customer : @Model.Customer.CustomerName</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        alert('@TempData["SuccessMessage"]');
+    </script>
+}
+<table class="table" id="invoice_paging">
+    <thead>
+        <tr>
+            <th>
+                Invoice No
+            </th>
+            <th>
+                Invoice Date
+            </th>
+            <th>
+                Total Price
+            </th>
+            <th>
+                Total Vat
+            </th>
+            <th>
+                Is Invoice Paid
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Invoices)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InvoiceNo)
+                </td>
+                <td>
+                    @item.InvoiceDate.ToShortDateString()
+                </td>
+                <td>
+                    @string.Format("{0:N}", item.TotalPrice)
+                </td>
+                <td>
+                    @string.Format("{0:N}", item.TotalVat)
+                </td>
+                <td>
+                    @(item.IsInvoicePaid.HasValue ? (item.IsInvoicePaid.Value ? "paid" : "waiting") : "waiting")
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Invoice", new { id = item.Id }, new { @class = "btn btn-warning" }) |
+                    @Html.ActionLink("Details", "Details", "Invoice", new { id = item.Id }, new { @class = "btn btn-info" }) |
+                    @Html.ActionLink("Delete", "Delete", "Invoice", new { id = item.Id }, new { @class = "btn btn-danger" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+@Html.ActionLink("Back to Accounts Page", "Index", "Account", null, new { @class = "btn btn-primary" })
+@Html.ActionLink("Back to Invoice Page", "Index", "Invoice", null, new { @class = "btn btn-info" })

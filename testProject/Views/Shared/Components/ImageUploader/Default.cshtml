@@ -1,0 +1,11 @@
+﻿@model string
+
+<div class="form-group">
+        <label asp-for="@Model"></label>
+        <div class="custom-file">
+            <input asp-for="@Model" type="file" class="form-control" id="@Model" name="@Model" accept="image/*" required onchange="document.getElementById('PostImagePrv').src=window.URL.createObjectURL(this.files[0])" />
+            <label class="custom-file-label" for="@Model">Choose File</label>
+        </div>
+        @Html.ValidationMessage(Model,new{id="testId",@class="text-danger"})
+        <img id="PostImagePrv" src="~/images/noimage.jpg" alt="Post Image" width="240" height="180" style="border:1px; margin-top:20px; margin-left:120px;" />
+    </div>

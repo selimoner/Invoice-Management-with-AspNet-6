@@ -1,0 +1,42 @@
+﻿@model testProject.ViewModels.PostViewModels.PostViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create New Post</h1>
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        alert('@TempData["SuccessMessage"]');
+    </script>
+}
+<hr />
+
+<form enctype="multipart/form-data" asp-action="Create" method="post" class="form-group col-sm-6">
+    <div>
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="PublishDate"></label>
+        <input asp-for="PublishDate" type="date" class="form-control" />
+        <span asp-validation-for="PublishDate" class="text-danger"></span>
+    </div>
+    
+    <vc:image-uploader field-name="@nameof(Model.PostImage)"></vc:image-uploader>
+
+    <div class="form-group">
+        <br />
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-success">Back to List</a>
+    </div>
+    
+</form>
